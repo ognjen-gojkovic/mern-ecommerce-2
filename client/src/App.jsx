@@ -1,15 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import data from "./data.json";
+
 // components
 import Filter from "./components/filter/Filter";
 import Products from "./components/products/Products";
-
-import data from "./data.json";
+import Cart from "./components/cart/Cart";
 
 const App = () => {
   const [state, setState] = React.useState({
     products: data.products,
+    cartItems: [],
     size: "",
     sort: "",
   });
@@ -17,6 +19,7 @@ const App = () => {
   const sortProductsHandler = (e) => {
     const sort = e.target.value;
     setState({
+      ...state,
       sort,
       products: state.products
         .slice()
@@ -39,6 +42,7 @@ const App = () => {
   const filterProductsHandler = (e) => {
     if (e.target.value === "") {
       setState({
+        ...state,
         size: e.target.value,
         products: data.products,
       });
@@ -50,6 +54,33 @@ const App = () => {
         ),
       });
     }
+  };
+
+  const removeFromCart = (product) => {
+    const cartItems = state.cartItems.slice();
+    const newItems = cartItems.filter((x) => x._id !== product._id);
+    setState({
+      ...state,
+      cartItems: newItems,
+    });
+  };
+
+  const addToCart = (product) => {
+    let alreadyInCart = false;
+
+    const cartItems = state.cartItems.slice();
+
+    cartItems.forEach((item) => {
+      if (item._id === product._id) {
+        item.count++;
+        alreadyInCart = true;
+      }
+    });
+
+    if (!alreadyInCart) {
+      cartItems.push({ ...product, count: 1 });
+    }
+    setState({ ...state, cartItems });
   };
 
   return (
@@ -67,9 +98,11 @@ const App = () => {
               filterProductsHandler={filterProductsHandler}
               sortProductsHandler={sortProductsHandler}
             />
-            <Products products={state.products} />
+            <Products products={state.products} addToCartHandler={addToCart} />
           </div>
-          <div className="sidebar">Cart Items</div>
+          <div className="sidebar">
+            <Cart cartItems={state.cartItems} removeFromCart={removeFromCart} />
+          </div>
         </div>
       </main>
       <footer>All Rights Reserved.</footer>
