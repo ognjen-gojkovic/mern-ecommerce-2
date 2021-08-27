@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
 import { formatCurrency } from "../../utils";
 import { fetchProducts } from "../../redux/actions/actions.products";
+import { addToCart } from "../../redux/actions/actions.cart";
 
 import "./Products.css";
 import "./ProductDetails.css";
@@ -47,7 +48,7 @@ const Products = ({ products, addToCartHandler }) => {
                   <div>{formatCurrency(product.price)}</div>
                   <button
                     className="button primary"
-                    onClick={() => addToCartHandler(product)}
+                    onClick={() => dispatch(addToCart(product))}
                   >
                     Add to Cart
                   </button>
@@ -84,7 +85,7 @@ const Products = ({ products, addToCartHandler }) => {
                   <button
                     className="button primary"
                     onClick={() => {
-                      addToCartHandler(state.product);
+                      dispatch(addToCart(state.product));
                       closeModal();
                     }}
                   >
