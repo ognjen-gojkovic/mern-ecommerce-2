@@ -18,6 +18,12 @@ export const reducerCart = (state = INITIAL_STORE, action) => {
         cartItems: action.payload.cartItems,
       };
 
+    case typesCart.CLEAR_CART:
+      return {
+        ...state,
+        cartItems: [],
+      };
+
     default:
       return state;
   }

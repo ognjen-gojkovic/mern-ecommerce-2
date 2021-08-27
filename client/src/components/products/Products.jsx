@@ -21,7 +21,7 @@ const Products = ({ products, addToCartHandler }) => {
 
   React.useEffect(() => {
     dispatch(fetchProducts());
-  }, []);
+  }, [dispatch]);
 
   const openModal = (product) => {
     setState({ product });
