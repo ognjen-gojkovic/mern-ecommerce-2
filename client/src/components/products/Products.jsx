@@ -36,7 +36,7 @@ const Products = ({ products, addToCartHandler }) => {
       {reduxState.loading && <h2>Loading...</h2>}
       <Fade bottom cascade>
         <ul className="products">
-          {products.map((product) => (
+          {reduxState.filteredProducts.map((product) => (
             <li key={product._id}>
               <div className="product">
                 <Link to={`#${product._id}`} onClick={() => openModal(product)}>

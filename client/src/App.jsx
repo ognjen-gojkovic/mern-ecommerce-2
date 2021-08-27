@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import data from "./data.json";
-
 // components
 import Filter from "./components/filter/Filter";
 import Products from "./components/products/Products";
@@ -10,53 +8,10 @@ import Cart from "./components/cart/Cart";
 
 const App = () => {
   const [state, setState] = React.useState({
-    products: data.products,
     cartItems: localStorage.getItem("cartItems")
       ? JSON.parse(localStorage.getItem("cartItems"))
       : [],
-    size: "",
-    sort: "",
   });
-
-  const sortProductsHandler = (e) => {
-    const sort = e.target.value;
-    setState({
-      ...state,
-      sort,
-      products: state.products
-        .slice()
-        .sort((a, b) =>
-          sort === "lowest"
-            ? a.price > b.price
-              ? 1
-              : -1
-            : sort === "highest"
-            ? a.price < b.price
-              ? 1
-              : -1
-            : a._id > b._id
-            ? 1
-            : -1
-        ),
-    });
-  };
-
-  const filterProductsHandler = (e) => {
-    if (e.target.value === "") {
-      setState({
-        ...state,
-        size: e.target.value,
-        products: data.products,
-      });
-    } else {
-      setState({
-        size: e.target.value,
-        products: data.products.filter(
-          (product) => product.availableSizes.indexOf(e.target.value) >= 0
-        ),
-      });
-    }
-  };
 
   const removeFromCart = (product) => {
     const cartItems = state.cartItems.slice();
@@ -99,14 +54,8 @@ const App = () => {
       <main>
         <div className="content">
           <div className="main">
-            <Filter
-              count={state.products.length}
-              size={state.size}
-              sort={state.sort}
-              filterProductsHandler={filterProductsHandler}
-              sortProductsHandler={sortProductsHandler}
-            />
-            <Products products={state.products} addToCartHandler={addToCart} />
+            <Filter />
+            <Products addToCartHandler={addToCart} />
           </div>
           <div className="sidebar">
             <Cart
