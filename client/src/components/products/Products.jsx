@@ -1,17 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { formatCurrency } from "../../utils";
 import Fade from "react-reveal/Fade";
 import Zoom from "react-reveal/Zoom";
 import Modal from "react-modal";
+import { useDispatch, useSelector } from "react-redux";
+import { formatCurrency } from "../../utils";
+import { fetchProducts } from "../../redux/actions/actions.products";
 
 import "./Products.css";
 import "./ProductDetails.css";
 
 const Products = ({ products, addToCartHandler }) => {
+  const dispatch = useDispatch();
+  const reduxState = useSelector((state) => state.reducerProducts);
+
   const [state, setState] = React.useState({
     product: null,
   });
+
+  React.useEffect(() => {
+    dispatch(fetchProducts());
+  }, []);
 
   const openModal = (product) => {
     setState({ product });
@@ -21,8 +30,10 @@ const Products = ({ products, addToCartHandler }) => {
     setState({ product: null });
   };
 
+  console.log(reduxState);
   return (
     <div>
+      {reduxState.loading && <h2>Loading...</h2>}
       <Fade bottom cascade>
         <ul className="products">
           {products.map((product) => (
