@@ -1,11 +1,16 @@
 import React from "react";
-import { formatCurrency } from "../../utils";
+import { useDispatch, useSelector } from "react-redux";
 import Fade from "react-reveal/Fade";
+import { formatCurrency } from "../../utils";
+import { removeFromCart } from "../../redux/actions/actions.cart";
 
 import "./Cart.css";
 import "./Checkout.css";
 
-const Cart = ({ cartItems, removeFromCart, createOrderHandler }) => {
+const Cart = () => {
+  const dispatch = useDispatch();
+  const reduxState = useSelector((state) => state.reducerCart);
+
   const [state, setState] = React.useState({
     showCheckout: false,
     name: "",
@@ -29,27 +34,24 @@ const Cart = ({ cartItems, removeFromCart, createOrderHandler }) => {
       name: state.name,
       email: state.email,
       address: state.address,
-      cartItems,
+      cartItems: reduxState.cartItems,
     };
-
-    // function from app.js
-    createOrderHandler(order);
   };
 
   return (
     <div>
-      {cartItems.length === 0 ? (
+      {reduxState.cartItems.length === 0 ? (
         <div className="cart cart-header">Cart is Empty</div>
       ) : (
         <div className="cart cart-header">
-          You have {cartItems.length} in the cart.
+          You have {reduxState.cartItems.length} in the cart.
         </div>
       )}
       <div>
         <div className="cart">
           <Fade left cascade>
             <ul className="cart-items">
-              {cartItems.map((item) => (
+              {reduxState.cartItems.map((item) => (
                 <li key={item._id}>
                   <div>
                     <img src={item.image} alt={item.title} />
@@ -60,7 +62,7 @@ const Cart = ({ cartItems, removeFromCart, createOrderHandler }) => {
                       {formatCurrency(item.price)}x{item.count}{" "}
                       <button
                         className="button"
-                        onClick={() => removeFromCart(item)}
+                        onClick={() => dispatch(removeFromCart(item))}
                       >
                         Remove
                       </button>
@@ -71,14 +73,14 @@ const Cart = ({ cartItems, removeFromCart, createOrderHandler }) => {
             </ul>
           </Fade>
         </div>
-        {cartItems.length !== 0 && (
+        {reduxState.cartItems.length !== 0 && (
           <div>
             <div className="cart">
               <div className="total">
                 <div>
                   Total:{" "}
                   {formatCurrency(
-                    cartItems.reduce(
+                    reduxState.cartItems.reduce(
                       (qty, item) => item.price * item.count + qty,
                       0
                     )
