@@ -25,3 +25,14 @@ export const createOrderFetch = (order) => (dispatch) => {
 export const clearOrder = () => (dispatch) => {
   dispatch({ type: typesOrder.CLEAR_ORDER });
 };
+
+export const fetchOrders = () => (dispatch) => {
+  fetch("http://127.0.0.1:5000/api/orders")
+    .then((res) => res.json())
+    .then((data) => {
+      dispatch({
+        type: typesOrder.FETCH_ORDERS,
+        payload: data.orders,
+      });
+    });
+};
